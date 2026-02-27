@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>古月·灯箱叠加发光字门头</title>
+<title>古月·灯箱叠加发光字门头</title><标题>古月·灯箱叠加发光字门头</标题>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:"Microsoft YaHei",sans-serif}
-body{background:#f7f8fa;padding:0 0 60px}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Microsoft YaHei",sans-serif}*{box-sizing:border-box;margin:0;padding:0;font-family:"微软雅黑",sans-serif}
+body{background:#f7f8fa;padding:0 0 60px}body{背景:#f7f8fa;内边距:0 0 60px}
 .head{background:linear-gradient(90deg,#007CFE,#42A5F5);color:#fff;text-align:center;padding:40px 20px;margin-bottom:30px}
 .box{max-width:800px;margin:0 auto 30px;background:#fff;border-radius:16px;padding:30px;box-shadow:0 4px 20px rgba(0,0,0,.06)}
 .label{font-size:15px;color:#333;margin-bottom:10px}
-.input{width:100%;padding:14px 16px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;margin-bottom:20px;outline:0}
+.input{width:100%;padding:14px 16px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;margin-bottom:20px;outline:0}.输入{宽度:100%;内边距:14像素 16像素;边框:1像素 实线#e2e8f0;圆角:10像素;字体大小:15像素;下边距:20像素;外轮廓:0}
 .btn{width:100%;padding:15px;background:linear-gradient(90deg,#007CFE,#42A5F5);color:#fff;border:none;border-radius:10px;font-size:16px;cursor:pointer}
 .btn:disabled{background:#a8d1ff}
-.result{max-width:800px;margin:0 auto;padding:0 20px}
+.result{max-width:800px;margin:0 auto;padding:0 20px}.结果{最大宽度:800像素;边距:0 自动;填充:0 20像素}
 .item{background:#fff;border-radius:12px;padding:18px;margin-bottom:12px;border-left:4px solid #007CFE;box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .item-text{flex:1;font-size:14px;line-height:1.6;color:#333}
 .copy{padding:6px 10px;background:#007CFE;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer}
-.copy.done{background:#ccc;color:#666;cursor:default}
+.copy.done{background:#ccc;color:#666;cursor:default}.复制.完成{背景:#ccc;颜色:#666;光标:默认}
 .copy-all{margin:20px auto;display:block;padding:12px 24px;background:#007CFE;color:#fff;border:none;border-radius:10px;font-size:15px;cursor:pointer}
 </style>
 
@@ -60,7 +60,7 @@ function copyAll(){
   });
 }
 
-function run(){
+function run(){函数 运行(){
   const val = document.getElementById("industry").value.trim();
   if(!val){alert("请输入行业类型");return}
   const btn = document.getElementById("go");
@@ -70,10 +70,10 @@ function run(){
   setTimeout(()=>{
     let arr = [];
     for(let i=0;i<20;i++) arr.push(make(val,i));
-    texts.splice(0, texts.length, ...arr);
+    texts.splice(0, texts.length, ...arr);文本.拼接(0, 文本.长度, ...数组);
     
     let html = "";
-    arr.forEach((t,i)=>{
+    arr.forEach((t,i)=>{数组.遍历((元素,索引)=>{
       html += "<div class=\"item\"><div class=\"item-text\">"+(i+1)+". "+t+"</div><button class=\"copy\" onclick=\"copyOne('"+t.replace(/'/g,"\\'")+"',this)\">复制</button></div>";
     });
     html += "<button class=\"copy-all\" onclick=\"copyAll()\">📋 一键复制全部20组</button>";
@@ -85,4 +85,5 @@ function run(){
 }
 </script>
 </body>
+
 </html>
