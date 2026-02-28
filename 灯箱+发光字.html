@@ -3,162 +3,23 @@
 <head>
 <meta charset="utf-8">
 <title>古月·灯箱叠加发光字门头提示词生成器</title>
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:"Microsoft YaHei",sans-serif}
-
-body{background:#f7f8fa;padding:0 0 60px;min-height:100vh;}
-
-.head{
-  background:linear-gradient(90deg,#007CFE,#42A5F5);
-  color:#fff;
-  text-align:center;
-  padding:40px 20px;
-  margin-bottom:30px;
-  border-radius:0 0 16px 16px; /* 新增圆角，视觉更柔和 */
-  box-shadow:0 4px 16px rgba(0,124,254,0.12);
-}
-.head h1{font-size:24px;margin-bottom:8px;}
-.head p{font-size:14px;opacity:0.9;}
-
-.box{
-  max-width:800px;
-  margin:0 auto 30px;
-  background:#fff;
-  border-radius:16px;
-  padding:30px;
-  box-shadow:0 4px 20px rgba(0,0,0,.06)
-}
-
-.label{font-size:15px;color:#333;margin-bottom:10px;font-weight:500;}
-
-.input{
-  width:100%;
-  padding:14px 16px;
-  border:1px solid #e2e8f0;
-  border-radius:10px;
-  font-size:15px;
-  margin-bottom:20px;
-  outline:0;
-  transition:0.2s; /* 新增聚焦过渡 */
-}
-.input:focus{
-  border-color:#007CFE;
-  box-shadow:0 0 0 4px rgba(0,124,254,0.1);
-}
-
-.btn{
-  width:100%;
-  padding:15px;
-  background:linear-gradient(90deg,#007CFE,#42A5F5);
-  color:#fff;
-  border:none;
-  border-radius:10px;
-  font-size:16px;
-  cursor:pointer;
-  transition:0.3s;
-}
-.btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 16px rgba(0,124,254,0.15);
-}
-.btn:disabled{
-  background:#a8d1ff;
-  cursor:not-allowed;
-  transform:none;
-  box-shadow:none;
-}
-
-.result{
-  max-width:800px;
-  margin:0 auto;
-  padding:0 20px
-}
-
-.item{
-  background:#fff;
-  border-radius:12px;
-  padding:18px;
-  margin-bottom:12px;
-  border-left:4px solid #007CFE;
-  box-shadow:0 2px 10px rgba(0,0,0,.05);
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-  transition:0.2s; /* 新增hover效果 */
-}
-.item:hover{
-  box-shadow:0 4px 15px rgba(0,0,0,.08);
-  transform:translateY(-1px);
-}
-
-.item-text{
-  flex:1;
-  font-size:14px;
-  line-height:1.6;
-  color:#333;
-  word-break:break-all; /* 新增换行，避免溢出 */
-}
-
-.copy{
-  padding:6px 10px;
-  background:#007CFE;
-  color:#fff;
-  border:none;
-  border-radius:6px;
-  font-size:12px;
-  cursor:pointer;
-  white-space:nowrap;
-  flex-shrink:0; /* 防止挤压 */
-  transition:0.2s;
-}
-.copy:hover{
-  background:#0066d1;
-}
-.copy.done{
-  background:#ccc;
-  color:#666;
-  cursor:default;
-  transform:none;
-}
-
-.copy-all{
-  margin:20px auto;
-  display:block;
-  padding:12px 24px;
-  background:#007CFE;
-  color:#fff;
-  border:none;
-  border-radius:10px;
-  font-size:15px;
-  cursor:pointer;
-  transition:0.2s;
-}
-.copy-all:hover{
-  background:#0066d1;
-  transform:translateY(-2px);
-  box-shadow:0 4px 12px rgba(0,124,254,0.15);
-}
-
-/* 新增加载提示 */
-.loading{
-  text-align:center;
-  padding:20px;
-  color:#666;
-  font-size:14px;
-}
-
-/* 响应式适配 */
-@media (max-width: 480px) {
-  .head h1{font-size:20px;}
-  .box{padding:20px;}
-  .item{flex-direction:column;gap:10px;}
-  .copy{align-self:flex-end;}
-}
+body{background:#f7f8fa;padding:0 0 60px}
+.head{background:linear-gradient(90deg,#007CFE,#42A5F5);color:#fff;text-align:center;padding:40px 20px;margin-bottom:30px}
+.box{max-width:800px;margin:0 auto 30px;background:#fff;border-radius:16px;padding:30px;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.label{font-size:15px;color:#333;margin-bottom:10px}
+.input{width:100%;padding:14px 16px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;margin-bottom:20px;outline:0}
+.btn{width:100%;padding:15px;background:linear-gradient(90deg,#007CFE,#42A5F5);color:#fff;border:none;border-radius:10px;font-size:16px;cursor:pointer}
+.btn:disabled{background:#a8d1ff}
+.result{max-width:800px;margin:0 auto;padding:0 20px}
+.item{background:#fff;border-radius:12px;padding:18px;margin-bottom:12px;border-left:4px solid #007CFE;box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.item-text{flex:1;font-size:14px;line-height:1.6;color:#333}
+.copy{padding:6px 10px;background:#007CFE;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer}
+.copy.done{background:#ccc;color:#666;cursor:default}
+.copy-all{margin:20px auto;display:block;padding:12px 24px;background:#007CFE;color:#fff;border:none;border-radius:10px;font-size:15px;cursor:pointer}
 </style>
 </head>
-
 <body>
 
 <div class="head">
@@ -177,133 +38,70 @@ body{background:#f7f8fa;padding:0 0 60px;min-height:100vh;}
 <script>
 let texts = [];
 
-// 优化：随机抽取标语类型，避免按索引重复/超出数组长度
-function getRandomType() {
+function make(industry){
   const types = [
     "主营品类+简洁醒目标语","特色品类+清晰易记标语","招牌品类+简洁吸睛标语",
     "核心品类+清晰醒目标语","爆款品类+简洁直观标语","主营项目+清晰吸睛标语",
     "特色项目+简洁明了标语","招牌项目+清晰直观标语","核心项目+简洁吸睛标语",
     "爆款项目+清晰醒目标语","主营服务+简洁吸睛标语","特色服务+清晰醒目标语",
-    "招牌服务+简洁直观标语","核心服务+简洁吸睛标语","爆款服务+清晰醒目标语",
+    "招牌服务+简洁直观标语","核心服务+简洁吸睛标语","爆款服务+简洁醒目标语",
     "主营产品+清晰吸睛标语","特色产品+简洁醒目标语","招牌产品+清晰直观标语",
     "核心产品+简洁吸睛标语","爆款产品+清晰醒目标语"
   ];
-  return types[Math.floor(Math.random() * types.length)];
+  const t = types[Math.floor(Math.random()*types.length)];
+  return "白天自然光，门头正立面，完整展示，正面平视视角，无透视畸变，无遮挡，灯箱叠加发光字门头，底层整体软膜灯箱，上层叠加立体发光字，双层结构，层次强、醒目高级，"+industry+"店铺门头，软膜灯箱、无边框灯箱、UV软膜、亚克力背光字、不锈钢精工字、迷你发光字、金属包边，品牌店名+"+t+"，现代清晰字体，日间灯箱整体柔和发光，上层发光字高亮立体，双层发光效果，8K高清，商业写实效果图，细节丰富，色彩自然，可直接施工参考，禁止墙面出现灯箱";
 }
 
-// 生成单条提示词（重构，修复标语逻辑）
-function make(industry) {
-  return `白天自然光，门头正立面，完整展示，正面平视视角，无透视畸变，无遮挡，灯箱叠加发光字门头，底层整体软膜灯箱，上层叠加立体发光字，双层结构，层次强、醒目高级，${industry}店铺门头，软膜灯箱、无边框灯箱、UV软膜、亚克力背光字、不锈钢精工字、迷你发光字、金属包边，品牌店名+${getRandomType()}，现代清晰字体，日间灯箱整体柔和发光，上层发光字高亮立体，双层发光效果，8K高清，商业写实效果图，细节丰富，色彩自然，可直接施工参考，禁止墙面出现灯箱`;
-}
-
-// 复制单条提示词（优化体验+异常捕获）
+// 复制单条 —— 稳定版
 function copyOne(text, btn) {
-  // 空值校验
-  if (!text) {
-    alert("提示词为空，无法复制！");
-    return;
-  }
   navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = "已复制";
     btn.classList.add("done");
-    btn.innerText = "✅ 已复制";
-    // 3秒后恢复按钮状态
     setTimeout(() => {
+      btn.textContent = "复制";
       btn.classList.remove("done");
-      btn.innerText = "复制";
-    }, 3000);
+    }, 2000);
   }).catch(err => {
-    alert(`复制失败！请手动复制。原因：${err.message || "剪贴板权限不足"}`);
+    alert("复制失败：" + err);
   });
 }
 
-// 复制全部提示词（优化异常捕获）
+// 复制全部
 function copyAll() {
-  if (texts.length === 0) {
-    alert("暂无提示词可复制！");
-    return;
-  }
   navigator.clipboard.writeText(texts.join("\n\n")).then(() => {
-    alert("✅ 已成功复制全部20组提示词！");
-  }).catch(err => {
-    alert(`全部复制失败！请手动复制。原因：${err.message || "剪贴板权限不足"}`);
+    alert("✅ 已复制全部20组");
   });
 }
 
-// 主生成函数（重构，修复复制按钮绑定+提升体验）
+// 主函数
 function run() {
   const val = document.getElementById("industry").value.trim();
+  if (!val) { alert("请输入行业类型"); return; }
+
   const btn = document.getElementById("go");
-  const resultDom = document.getElementById("result");
-
-  // 输入校验+聚焦
-  if (!val) {
-    alert("请输入行业类型（如：餐饮美食、奶茶等）");
-    document.getElementById("industry").focus();
-    return;
-  }
-
-  // 按钮状态更新+加载提示
   btn.disabled = true;
   btn.innerText = "生成中...";
-  resultDom.innerHTML = '<div class="loading">🚀 正在生成提示词，请稍候...</div>';
-  texts = [];
 
   setTimeout(() => {
+    texts = [];
     let html = "";
-    // 循环生成20组
-    for(let i = 0; i < 20; i++) {
-      const t = make(val);
-      texts.push(t);
-      
-      // 改用创建DOM方式绑定事件，避免字符串拼接转义问题
-      const itemDiv = document.createElement("div");
-      itemDiv.className = "item";
-      
-      const textDiv = document.createElement("div");
-      textDiv.className = "item-text";
-      textDiv.innerText = (i+1) + ". " + t;
-      
-      const copyBtn = document.createElement("button");
-      copyBtn.className = "copy";
-      copyBtn.innerText = "复制";
-      // 绑定事件（无转义问题）
-      copyBtn.onclick = function() {
-        copyOne(t, this);
-      };
-      
-      itemDiv.appendChild(textDiv);
-      itemDiv.appendChild(copyBtn);
-      // 先创建DOM再拼接，避免字符串转义错误
-      html += itemDiv.outerHTML;
+    for (let i = 0; i < 20; i++) {
+      const text = make(val);
+      texts.push(text);
+      // 关键：用 onclick 正确拼接，不会出错
+      html += `<div class='item'>
+        <div class='item-text'>${i+1}. ${text}</div>
+        <button class='copy' onclick="copyOne(atob('${btoa(text)}'), this)">复制</button>
+      </div>`;
     }
-
-    // 添加一键复制按钮
-    const copyAllBtn = document.createElement("button");
-    copyAllBtn.className = "copy-all";
-    copyAllBtn.innerText = "📋 一键复制全部20组";
-    copyAllBtn.onclick = copyAll;
-    html += copyAllBtn.outerHTML;
-
-    // 渲染结果
-    resultDom.innerHTML = html;
-
-    // 恢复按钮状态
+    html += `<button class='copy-all' onclick='copyAll()'>📋 一键复制全部20组</button>`;
+    document.getElementById("result").innerHTML = html;
     btn.disabled = false;
     btn.innerText = "🚀 生成20组提示词";
-
   }, 600);
 }
 
-// 绑定按钮点击事件（替代内联onclick，提升稳定性）
-document.getElementById("go").addEventListener("click", run);
-
-// 新增：回车触发生成
-document.getElementById("industry").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") {
-    run();
-  }
-});
+document.getElementById("go").onclick = run;
 </script>
-
 </body>
 </html>
