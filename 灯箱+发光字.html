@@ -6,14 +6,55 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:"Microsoft YaHei",sans-serif}
-body{background:#f7f8fa;padding:0 0 60px}
+body{
+  background:#f7f8fa;
+  padding:0 0 60px;
+  transition:all .3s ease;
+}
+
+/* 夜间UI模式 */
+body.dark{
+  background:#121212;
+  color:#eee;
+}
+
+body.dark .box,
+body.dark .item{
+  background:#1e1e1e;
+  color:#eee;
+}
+
+body.dark .input{
+  background:#2a2a2a;
+  border:1px solid #444;
+  color:#fff;
+}
 
 .head{
   background:linear-gradient(90deg,#007CFE,#42A5F5);
   color:#fff;
   text-align:center;
   padding:40px 20px;
-  margin-bottom:30px
+  margin-bottom:30px;
+  position:relative;
+}
+
+.theme-toggle{
+  position:absolute;
+  right:20px;
+  top:20px;
+  background:#fff;
+  color:#007CFE;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
+}
+
+body.dark .theme-toggle{
+  background:#333;
+  color:#fff;
 }
 
 .box{
@@ -22,10 +63,11 @@ body{background:#f7f8fa;padding:0 0 60px}
   background:#fff;
   border-radius:16px;
   padding:30px;
-  box-shadow:0 4px 20px rgba(0,0,0,.06)
+  box-shadow:0 4px 20px rgba(0,0,0,.06);
+  transition:.3s;
 }
 
-.label{font-size:15px;color:#333;margin-bottom:10px}
+.label{font-size:15px;margin-bottom:10px}
 
 .input{
   width:100%;
@@ -34,7 +76,7 @@ body{background:#f7f8fa;padding:0 0 60px}
   border-radius:10px;
   font-size:15px;
   margin-bottom:20px;
-  outline:0
+  outline:0;
 }
 
 .btn{
@@ -45,10 +87,8 @@ body{background:#f7f8fa;padding:0 0 60px}
   border:none;
   border-radius:10px;
   font-size:16px;
-  cursor:pointer
+  cursor:pointer;
 }
-
-.btn:disabled{background:#a8d1ff}
 
 .result{max-width:800px;margin:0 auto;padding:0 20px}
 
@@ -62,10 +102,11 @@ body{background:#f7f8fa;padding:0 0 60px}
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
-  gap:12px
+  gap:12px;
+  transition:.3s;
 }
 
-.item-text{flex:1;font-size:14px;line-height:1.6;color:#333}
+.item-text{flex:1;font-size:14px;line-height:1.6;white-space:pre-line}
 
 .copy{
   padding:6px 10px;
@@ -74,10 +115,10 @@ body{background:#f7f8fa;padding:0 0 60px}
   border:none;
   border-radius:6px;
   font-size:12px;
-  cursor:pointer
+  cursor:pointer;
 }
 
-.copy.done{background:#ccc;color:#666;cursor:default}
+.copy.done{background:#666}
 
 .copy-all{
   margin:20px auto;
@@ -88,7 +129,7 @@ body{background:#f7f8fa;padding:0 0 60px}
   border:none;
   border-radius:10px;
   font-size:15px;
-  cursor:pointer
+  cursor:pointer;
 }
 </style>
 </head>
@@ -96,12 +137,21 @@ body{background:#f7f8fa;padding:0 0 60px}
 
 <div class="head">
   <h1>古月·灯箱叠加发光字门头提示词生成器</h1>
-  <p>白天正立面｜双层结构｜高识别度｜100%可施工</p>
+  <p>白天正立面｜黑夜发光｜双层结构｜100%可施工</p>
+  <button class="theme-toggle" id="themeToggle">切换UI夜间</button>
 </div>
 
 <div class="box">
   <div class="label">输入行业类型</div>
   <input class="input" id="industry" placeholder="例如：餐饮美食、奶茶、服装、美容">
+
+  <div class="label">效果模式</div>
+  <select class="input" id="mode">
+    <option value="day">白天效果</option>
+    <option value="night">黑夜效果</option>
+    <option value="auto">随机模式</option>
+  </select>
+
   <button class="btn" id="go">🚀 生成20组提示词</button>
 </div>
 
@@ -109,86 +159,117 @@ body{background:#f7f8fa;padding:0 0 60px}
 
 <script>
 
-let texts = [];
+// ================== 模型层 ==================
 
-function random(arr){
+const model = {
+  day:{
+    time:["白天自然光","商业街实景环境","城市主干道环境"],
+    lighting:"日间整体柔和发光，上层发光字高亮立体"
+  },
+  night:{
+    time:["夜晚商业街环境","夜景城市氛围","灯光开启状态"],
+    lighting:"夜间强对比发光效果，发光字高亮聚光，灯箱均匀透光，周围环境偏暗形成强烈对比"
+  },
+  base:["底层整体软膜灯箱","大面积无边框灯箱","整块UV软膜灯箱"],
+  top:["上层叠加立体发光字","叠加不锈钢精工发光字","叠加亚克力背光字"],
+  material:["金属包边","铝型材收边","精工不锈钢结构"],
+  font:["现代黑体字体","极简无衬线字体","高识别商业字体"],
+  slogan:["主营品类+简洁醒目标语","爆款产品+强识别口号","特色项目+清晰标语"]
+};
+
+function pick(arr){
   return arr[Math.floor(Math.random()*arr.length)];
 }
 
-function make(industry){
-
-  const time = ["白天自然光","商业街实景环境","城市主干道环境","步行街氛围场景"];
-  const base = ["底层整体软膜灯箱","大面积无边框灯箱","整块UV软膜灯箱"];
-  const top = ["上层叠加立体发光字","叠加不锈钢精工发光字","叠加亚克力背光字"];
-  const material = ["金属包边","铝型材收边","精工不锈钢结构"];
-  const font = ["现代黑体字体","极简无衬线字体","高识别商业字体"];
-  const slogan = [
-    "主营品类+简洁醒目标语",
-    "核心产品+清晰吸睛标语",
-    "爆款产品+强识别口号",
-    "特色项目+简洁明了标语"
-  ];
-
-  return `${random(time)}，门头正立面完整展示，平视无遮挡，无透视畸变，
-  灯箱叠加发光字门头结构，${random(base)}，${random(top)}，
-  双层发光结构，层次分明，高级感强，
-  ${industry}店铺门头，
-  软膜灯箱、亚克力发光字、${random(material)}，
-  品牌店名+${random(slogan)}，
-  ${random(font)}，
-  日间整体柔和发光，上层发光字高亮立体，
-  8K高清，商业写实效果图，细节丰富，可直接施工参考，
-  禁止墙面出现灯箱`;
+function getMode(){
+  const m=document.getElementById("mode").value;
+  if(m==="auto"){
+    return Math.random()>0.5?"day":"night";
+  }
+  return m;
 }
 
-function copyOne(text, btn){
-  navigator.clipboard.writeText(text).then(()=>{
-    btn.textContent="已复制";
-    btn.classList.add("done");
+function generate(industry){
+  const mode=getMode();
+  const mData=model[mode];
+
+  return `
+${pick(mData.time)}，门头正立面完整展示，平视无遮挡，
+灯箱叠加发光字门头结构，${pick(model.base)}，${pick(model.top)}，
+双层发光结构，层次分明，
+${industry}店铺门头，
+软膜灯箱、亚克力发光字、${pick(model.material)}，
+品牌店名+${pick(model.slogan)}，
+${pick(model.font)}，
+${mData.lighting}，
+8K高清，商业写实效果图，可施工参考，
+禁止墙面出现灯箱
+`.trim();
+}
+
+// ================== UI控制 ==================
+
+let texts=[];
+
+document.getElementById("go").addEventListener("click",function(){
+
+  const industry=document.getElementById("industry").value.trim();
+  if(!industry){alert("请输入行业类型");return;}
+
+  texts=[];
+  const container=document.getElementById("result");
+  container.innerHTML="";
+
+  for(let i=0;i<20;i++){
+    const text=generate(industry);
+    texts.push(text);
+
+    const item=document.createElement("div");
+    item.className="item";
+
+    const t=document.createElement("div");
+    t.className="item-text";
+    t.textContent=(i+1)+". "+text;
+
+    const btn=document.createElement("button");
+    btn.className="copy";
+    btn.textContent="复制";
+    btn.dataset.text=text;
+
+    item.appendChild(t);
+    item.appendChild(btn);
+    container.appendChild(item);
+  }
+
+  const allBtn=document.createElement("button");
+  allBtn.className="copy-all";
+  allBtn.textContent="📋 一键复制全部20组";
+  allBtn.id="copyAll";
+  container.appendChild(allBtn);
+});
+
+document.getElementById("result").addEventListener("click",function(e){
+
+  if(e.target.classList.contains("copy")){
+    navigator.clipboard.writeText(e.target.dataset.text);
+    e.target.textContent="已复制";
+    e.target.classList.add("done");
     setTimeout(()=>{
-      btn.textContent="复制";
-      btn.classList.remove("done");
+      e.target.textContent="复制";
+      e.target.classList.remove("done");
     },2000);
-  });
-}
+  }
 
-function copyAll(){
-  navigator.clipboard.writeText(texts.join("\n\n")).then(()=>{
+  if(e.target.id==="copyAll"){
+    navigator.clipboard.writeText(texts.join("\n\n"));
     alert("✅ 已复制全部20组");
-  });
-}
+  }
+});
 
-function run(){
-  const val=document.getElementById("industry").value.trim();
-  if(!val){alert("请输入行业类型");return;}
-
-  const btn=document.getElementById("go");
-  btn.disabled=true;
-  btn.innerText="生成中...";
-
-  setTimeout(()=>{
-    texts=[];
-    let html="";
-
-    for(let i=0;i<20;i++){
-      const text=make(val);
-      texts.push(text);
-      html+=`
-      <div class="item">
-        <div class="item-text">${i+1}. ${text}</div>
-        <button class="copy" onclick="copyOne(atob('${btoa(text)}'),this)">复制</button>
-      </div>`;
-    }
-
-    html+=`<button class="copy-all" onclick="copyAll()">📋 一键复制全部20组</button>`;
-    document.getElementById("result").innerHTML=html;
-
-    btn.disabled=false;
-    btn.innerText="🚀 生成20组提示词";
-  },500);
-}
-
-document.getElementById("go").onclick=run;
+// UI夜间模式切换
+document.getElementById("themeToggle").addEventListener("click",function(){
+  document.body.classList.toggle("dark");
+});
 
 </script>
 </body>
